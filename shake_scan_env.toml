@@ -1,5 +1,18 @@
 [scan_reader]
-address = "${SHAKE_SRC_ADDRESS}" # export SHAKE_SRC_ADDRESS=127.0.0.1:6379
+cluster = ${SHAKE_SRC_CLUSTER:-false}    # Set to true if the source is a Redis cluster
+address = "${SHAKE_SRC_ADDRESS}"         # export SHAKE_SRC_ADDRESS=127.0.0.1:6379
+username = "${SHAKE_SRC_USERNAME}"        # Keep empty if ACL is not in use
+password = "${SHAKE_SRC_PASSWORD}"        # Keep empty if no authentication is required
+tls = ${SHAKE_SRC_TLS:-false}                # Set to true to enable TLS if needed
+dbs = [${SHAKE_SRC_DBS:}]                 # set you want to scan dbs such as [1,5,7], if you don't want to scan all
+scan = ${SHAKE_SRC_SCAN:-true}            # set to false if you don't want to scan keys
+ksn = ${SHAKE_SRC_KSN:-false}             # set to true to enabled Redis keyspace notifications (KSN) subscription
+count =  ${SHAKE_SRC_COUNT:100}           # number of keys to scan per iteration
 
 [redis_writer]
+cluster = ${SHAKE_DST_CLUSTER:-false}   # Set to true if the source is a Redis cluster
 address = "${SHAKE_DST_ADDRESS}" # export SHAKE_DST_ADDRESS=127.0.0.1:6380
+username = "${SHAKE_DST_USERNAME}"        # Keep empty if ACL is not in use
+password = "${SHAKE_DST_PASSWORD}"        # Keep empty if no authentication is required
+tls = ${SHAKE_SRC_TLS:-false}                # Set to true to enable TLS if needed
+off_reply = ${SHAKE_DST_OFF_REPLY:-false}           # turn off the server reply

@@ -1,5 +1,19 @@
 [sync_reader]
-address = "${SHAKE_SRC_ADDRESS}" # export SHAKE_SRC_ADDRESS=127.0.0.1:6379
+cluster = ${SHAKE_SRC_CLUSTER:-false}     # Set to true if the source is a Redis cluster
+address = "${SHAKE_SRC_ADDRESS}"          # export SHAKE_SRC_ADDRESS=127.0.0.1:6379
+username = "${SHAKE_SRC_USERNAME}"        # Keep empty if ACL is not in use
+password = "${SHAKE_SRC_PASSWORD}"        # Keep empty if no authentication is required
+tls = ${SHAKE_SRC_TLS:-false}             # Set to true to enable TLS if needed
+sync_rdb = ${SHAKE_SRC_SYNC_RDB:-true}   # If RDB full synchronization is not required, set it to false, and set it to true for the first migration
+sync_aof = ${SHAKE_SRC_SYNC_AOF:-true}   # If AOF incremental synchronization is not required, set it to false, and set it to true for the first migration
+prefer_replica = ${SHAKE_SRC_PREFER_REPLICA:-false}     # Set to true to sync from a replica node
+try_diskless = ${SHAKE_SRC_TRY_DISKLESS:-false}       # Set to true for diskless sync if the source has repl-diskless-sync=yes
+
 
 [redis_writer]
+cluster = ${SHAKE_DST_CLUSTER:-false}   # Set to true if the source is a Redis cluster
 address = "${SHAKE_DST_ADDRESS}" # export SHAKE_DST_ADDRESS=127.0.0.1:6380
+username = "${SHAKE_DST_USERNAME}"        # Keep empty if ACL is not in use
+password = "${SHAKE_DST_PASSWORD}"        # Keep empty if no authentication is required
+tls = ${SHAKE_SRC_TLS:-false}                # Set to true to enable TLS if needed
+off_reply = ${SHAKE_DST_OFF_REPLY:-false}           # turn off the server reply

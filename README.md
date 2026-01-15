@@ -72,6 +72,67 @@ block_key_prefix = ["temp:", "cache:"]
 ./redis-shake shake.toml
 ```
 
+## 迁移模式变量详解：
+
+| 迁移模式 | 对应变量 | 详述                                                         |
+| -------- | -------- | ------------------------------------------------------------ |
+| PSync    | SYNC     | 设置为true表示启用sync迁移，一个迁移任务只能设置一种迁移模式 |
+| SCAN     | SCAN     | 设置为true表示启用scan迁移，一个迁移任务只能设置一种迁移模式 |
+| RDB      | RDB      | 设置为true表示启用rdb迁移，一个迁移任务只能设置一种迁移模式  |
+| AOF      | AOF      | 设置为true表示启用aof迁移，一个迁移任务只能设置一种迁移模式  |
+
+### sync_reader相关变量
+
+| 变量名称                 | 变量默认值 | 详述                                                         |
+| ------------------------ | ---------- | ------------------------------------------------------------ |
+| SHAKE_SRC_CLUSTER        | false      | 若数据源为 Redis 集群（Redis Cluster），请将该值设为 true    |
+| SHAKE_SRC_ADDRESS        |            | 指定源数据库地址，如果是redis cluster设置集群内的一个节点即可 |
+| SHAKE_SRC_USERNAME       |            | 若未使用 Redis ACL（访问控制列表）功能，保持该字段为空即可   |
+| SHAKE_SRC_PASSWORD       |            | 若 Redis 无需身份验证（无密码），保持该字段为空即可          |
+| SHAKE_SRC_TLS            | false      | 若需要启用 TLS 加密连接（保障传输安全），请将该值设为 true   |
+| SHAKE_SRC_SYNC_RDB       | true       | 若不需要 RDB 全量同步，将该值设为 false；首次数据迁移时建议设为 true |
+| SHAKE_SRC_SYNC_AOF       | true       | 若不需要 AOF 增量同步，将该值设为 false；首次数据迁移时建议设为 true |
+| SHAKE_SRC_PREFER_REPLICA | false      | 若希望从从节点（replica node）同步数据，将该值设为 true      |
+| SHAKE_SRC_TRY_DISKLESS   | false      | 若数据源 Redis 已配置 repl-diskless-sync=yes（无盘复制开启），将该值设为 true 以启用无盘同步 |
+
+### scan_reader相关变量
+
+| 变量名称           | 变量默认值 | 详述                                                         |
+| ------------------ | ---------- | ------------------------------------------------------------ |
+| SHAKE_SRC_CLUSTER  | false      | 若数据源为 Redis 集群（Redis Cluster），请将该值设为 true    |
+| SHAKE_SRC_ADDRESS  |            | 指定源数据库地址，如果是redis cluster设置集群内的一个节点即可 |
+| SHAKE_SRC_USERNAME |            | 若未使用 Redis ACL（访问控制列表）功能，保持该字段为空即可   |
+| SHAKE_SRC_PASSWORD |            | 若 Redis 无需身份验证（无密码），保持该字段为空即可          |
+| SHAKE_SRC_TLS      | false      | 若需要启用 TLS 加密连接（保障传输安全），请将该值设为 true   |
+| SHAKE_SRC_DBS      |            | 配置需要扫描的数据库编号，示例：[1,5,7]；若留空（不配置），则扫描所有数据库 |
+| SHAKE_SRC_SCAN     | true       | 若不需要扫描 Redis 中的键（key），请将该值设为 false         |
+| SHAKE_SRC_KSN      | false      | 设为 true 以启用 Redis 键空间通知（Keyspace Notifications，简称 KSN）订阅功能 |
+| SHAKE_SRC_COUNT    | 100        | 每次迭代（扫描循环）中要扫描的键（key）的数量                |
+
+### rdb_reader相关变量
+
+| 变量名称           | 变量默认值    | 详述                                           |
+| ------------------ | ------------- | ---------------------------------------------- |
+| SHAKE_RDB_FILEPATH | /tmp/dump.rdb | 定义dump.rdb文件的存储位置，需要设置为绝对路径 |
+
+### aof_reader相关变量
+
+| 变量名称           | 变量默认值          | 详述                                                 |
+| ------------------ | ------------------- | ---------------------------------------------------- |
+| SHAKE_AOF_FILEPATH | /tmp/appendonly.aof | 定义appendonly.aof文件的存储位置，需要设置为绝对路径 |
+
+### redis_writer相关变量（写入数据库相关）
+
+| 变量名称            | 变量默认值 | 详述                                                         |
+| ------------------- | ---------- | ------------------------------------------------------------ |
+| SHAKE_DST_CLUSTER   | false      | 若数据源为 Redis 集群（Redis Cluster），请将该值设为 true    |
+| SHAKE_DST_ADDRESS   |            | 指定目标数据库地址，如果是redis cluster设置集群内的一个节点即可 |
+| SHAKE_DST_USERNAME  |            | 若未使用 Redis ACL（访问控制列表）功能，保持该字段为空即可   |
+| SHAKE_DST_PASSWORD  |            | 若 Redis 无需身份验证（无密码），保持该字段为空即可          |
+| SHAKE_DST_TLS       | false      | 若需要启用 TLS 加密连接（保障传输安全），请将该值设为 true   |
+| SHAKE_DST_OFF_REPLY | false      | 关闭服务器响应（禁用 Redis 服务端的返回应答信息），一般情况设置为false，保证数据一致性 |
+
+
 For more help, check the [docs](https://tair-opensource.github.io/RedisShake/zh/guide/mode.html).
 
 ## Cross-Version Migration

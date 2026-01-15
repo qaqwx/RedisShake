@@ -1,0 +1,10 @@
+[aof_reader]
+filepath = "${SHAKE_AOF_FILEPATH:-/tmp/appendonly.aof}"
+
+[redis_writer]
+cluster = ${SHAKE_DST_CLUSTER:-false}   # Set to true if the source is a Redis cluster
+address = "${SHAKE_DST_ADDRESS}" # export SHAKE_DST_ADDRESS=127.0.0.1:6380
+username = "${SHAKE_DST_USERNAME}"        # Keep empty if ACL is not in use
+password = "${SHAKE_DST_PASSWORD}"        # Keep empty if no authentication is required
+tls = ${SHAKE_SRC_TLS:-false}                # Set to true to enable TLS if needed
+off_reply = ${SHAKE_DST_OFF_REPLY:-false}           # turn off the server reply
